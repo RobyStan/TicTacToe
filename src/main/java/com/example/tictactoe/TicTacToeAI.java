@@ -15,7 +15,7 @@ import java.util.Random;
 
 public class TicTacToeAI {
 
-    private boolean xTurn = true;  // player is X, AI is O
+    private boolean xTurn = true;  // true dacă e rândul lui X (player)
     private boolean gameOver = false;
 
     private final Button[][] board = new Button[3][3];
@@ -24,13 +24,16 @@ public class TicTacToeAI {
     private final Random random = new Random();
 
     private final GameModeSwitcher switcher;
-
     private final DifficultyLevel difficulty;
     private int moveCount = 0;
 
-    public TicTacToeAI(GameModeSwitcher switcher, DifficultyLevel difficulty) {
+    private final boolean playerStarts;
+
+    public TicTacToeAI(GameModeSwitcher switcher, DifficultyLevel difficulty, boolean playerStarts) {
         this.switcher = switcher;
         this.difficulty = difficulty;
+        this.playerStarts = playerStarts;
+        this.xTurn = true;
     }
 
     public Parent createContent() {
@@ -69,6 +72,11 @@ public class TicTacToeAI {
 
         root.getChildren().addAll(grid, buttonsBox);
 
+        if (!playerStarts) {
+            xTurn = false;
+            aiMove();
+            xTurn = true;
+        }
         return root;
     }
 
@@ -80,7 +88,7 @@ public class TicTacToeAI {
         btn.setOnAction(e -> {
             if (!btn.getText().isEmpty() || !xTurn || gameOver) return;
 
-            btn.setText("X");  // player move
+            btn.setText("X");
 
             if (checkWin()) {
                 showWinDialog("Player (X)");
@@ -92,7 +100,7 @@ public class TicTacToeAI {
                 return;
             }
 
-            xTurn = false; // AI turn
+            xTurn = false;
             aiMove();
 
             if (checkWin()) {
@@ -239,10 +247,16 @@ public class TicTacToeAI {
         for (Button[] row : board)
             for (Button btn : row)
                 btn.setText("");
-        xTurn = true;
         gameOver = false;
         moveCount = 0;
         buttonsBox.setVisible(false);
+
+        xTurn = true;
+        if (!playerStarts) {
+            xTurn = false;
+            aiMove();
+            xTurn = true;
+        }
     }
 
     public interface GameModeSwitcher {

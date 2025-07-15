@@ -3,6 +3,7 @@ package com.example.tictactoe;
 import javafx.scene.Parent;
 import javafx.scene.control.Alert;
 import javafx.scene.control.Button;
+import javafx.scene.control.Label;
 import javafx.scene.layout.GridPane;
 import javafx.scene.layout.VBox;
 import javafx.scene.layout.HBox;
@@ -16,14 +17,27 @@ public class TicTacToe {
     private final VBox root = new VBox(10);
     private final HBox buttonsBox = new HBox(10);
     private final GameModeSwitcher switcher;
+    private final Label turnLabel = new Label();
+
+    private final String player1Name;
+    private final String player2Name;
 
     public TicTacToe(GameModeSwitcher switcher) {
+        this(switcher, "Player 1", "Player 2");
+    }
+
+    public TicTacToe(GameModeSwitcher switcher, String player1Name, String player2Name) {
         this.switcher = switcher;
+        this.player1Name = (player1Name == null || player1Name.isEmpty()) ? "Player 1" : player1Name;
+        this.player2Name = (player2Name == null || player2Name.isEmpty()) ? "Player 2" : player2Name;
     }
 
     public Parent createContent() {
         root.setPrefSize(500, 500);
         root.setAlignment(Pos.CENTER);
+
+        turnLabel.setText(player1Name + " (X)'s turn");
+        root.getChildren().add(turnLabel);
 
         GridPane grid = new GridPane();
         grid.setAlignment(Pos.CENTER);
@@ -42,8 +56,6 @@ public class TicTacToe {
 
         playAgainBtn.setOnAction(e -> {
             resetBoard();
-            buttonsBox.getChildren().clear();
-            buttonsBox.getChildren().addAll(playAgainBtn, changeModeBtn);
             buttonsBox.setVisible(false);
         });
 
@@ -70,8 +82,9 @@ public class TicTacToe {
             if (!btn.getText().isEmpty() || gameOver) return;
 
             btn.setText(xTurn ? "X" : "O");
+
             if (checkWin()) {
-                showWinDialog(xTurn ? "X" : "O");
+                showWinDialog(xTurn ? player1Name : player2Name);
                 gameOver = true;
                 showEndButtons();
             } else if (isBoardFull()) {
@@ -80,6 +93,7 @@ public class TicTacToe {
                 showEndButtons();
             } else {
                 xTurn = !xTurn;
+                turnLabel.setText(xTurn ? player1Name + " (X)'s turn" : player2Name + " (O)'s turn");
             }
         });
 
@@ -125,7 +139,7 @@ public class TicTacToe {
         alert.setTitle("Game over");
         alert.setHeaderText(null);
         if (winner.equals("Draw!")) {
-            alert.setContentText(winner);
+            alert.setContentText("It's a draw!");
         } else {
             alert.setContentText("Winner: " + winner);
         }
@@ -138,6 +152,7 @@ public class TicTacToe {
                 btn.setText("");
         xTurn = true;
         gameOver = false;
+        turnLabel.setText(player1Name + " (X)'s turn");
         buttonsBox.setVisible(false);
     }
 
