@@ -24,10 +24,10 @@ A simple TicTacToe game with a graphical user interface built using JavaFX. The 
 
 The following features are planned or in development:
 
-- [ ] **AI Difficulty Levels**  
+- [x] **AI Difficulty Levels**  
   Implement three AI difficulty modes:
     - Easy: Random moves
-    - Medium: Block obvious winning moves
+    - Medium: Mix of random moves and Minimax algorithm
     - Hard: Use the Minimax algorithm for optimal play
 
 - [ ] **Current Turn Indicator**  

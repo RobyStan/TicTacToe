@@ -22,7 +22,7 @@ public class TicTacToe {
     }
 
     public Parent createContent() {
-        root.setPrefSize(300, 400);
+        root.setPrefSize(500, 500);
         root.setAlignment(Pos.CENTER);
 
         GridPane grid = new GridPane();

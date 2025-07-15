@@ -25,12 +25,16 @@ public class TicTacToeAI {
 
     private final GameModeSwitcher switcher;
 
-    public TicTacToeAI(GameModeSwitcher switcher) {
+    private final DifficultyLevel difficulty;
+    private int moveCount = 0;
+
+    public TicTacToeAI(GameModeSwitcher switcher, DifficultyLevel difficulty) {
         this.switcher = switcher;
+        this.difficulty = difficulty;
     }
 
     public Parent createContent() {
-        root.setPrefSize(300, 400);
+        root.setPrefSize(500, 500);
         root.setAlignment(Pos.CENTER);
 
         GridPane grid = new GridPane();
@@ -51,8 +55,6 @@ public class TicTacToeAI {
 
         playAgainBtn.setOnAction(e -> {
             resetBoard();
-            buttonsBox.getChildren().clear();
-            buttonsBox.getChildren().addAll(playAgainBtn, changeModeBtn);
             buttonsBox.setVisible(false);
         });
 
@@ -79,15 +81,14 @@ public class TicTacToeAI {
             if (!btn.getText().isEmpty() || !xTurn || gameOver) return;
 
             btn.setText("X");  // player move
+
             if (checkWin()) {
                 showWinDialog("Player (X)");
-                gameOver = true;
-                showEndButtons();
+                endGame();
                 return;
             } else if (isBoardFull()) {
                 showWinDialog("Draw!");
-                gameOver = true;
-                showEndButtons();
+                endGame();
                 return;
             }
 
@@ -96,23 +97,35 @@ public class TicTacToeAI {
 
             if (checkWin()) {
                 showWinDialog("AI (O)");
-                gameOver = true;
-                showEndButtons();
+                endGame();
                 return;
             } else if (isBoardFull()) {
                 showWinDialog("Draw!");
-                gameOver = true;
-                showEndButtons();
+                endGame();
+            } else {
+                xTurn = true;
             }
-            xTurn = true;
         });
 
         return btn;
     }
 
     private void aiMove() {
-        if (gameOver) return;
+        switch (difficulty) {
+            case EASY -> makeRandomMove();
+            case MEDIUM -> {
+                if (moveCount % 2 == 0) {
+                    makeRandomMove();
+                } else {
+                    makeBestMove();
+                }
+                moveCount++;
+            }
+            case HARD -> makeBestMove();
+        }
+    }
 
+    private void makeRandomMove() {
         List<Button> emptyCells = new ArrayList<>();
         for (Button[] row : board)
             for (Button btn : row)
@@ -125,46 +138,97 @@ public class TicTacToeAI {
         }
     }
 
-    private boolean isBoardFull() {
-        for (Button[] row : board)
-            for (Button btn : row)
-                if (btn.getText().isEmpty()) return false;
-        return true;
+    private void makeBestMove() {
+        int bestScore = Integer.MIN_VALUE;
+        Button bestMove = null;
+
+        for (int row = 0; row < 3; row++) {
+            for (int col = 0; col < 3; col++) {
+                Button btn = board[row][col];
+                if (btn.getText().isEmpty()) {
+                    btn.setText("O");
+                    int score = minimax(false);
+                    btn.setText("");
+                    if (score > bestScore) {
+                        bestScore = score;
+                        bestMove = btn;
+                    }
+                }
+            }
+        }
+
+        if (bestMove != null) {
+            bestMove.setText("O");
+        }
+    }
+
+    private int minimax(boolean isMaximizing) {
+        if (checkWinFor("O")) return 1;
+        if (checkWinFor("X")) return -1;
+        if (isBoardFull()) return 0;
+
+        int bestScore = isMaximizing ? Integer.MIN_VALUE : Integer.MAX_VALUE;
+
+        for (Button[] row : board) {
+            for (Button btn : row) {
+                if (btn.getText().isEmpty()) {
+                    btn.setText(isMaximizing ? "O" : "X");
+                    int score = minimax(!isMaximizing);
+                    btn.setText("");
+                    bestScore = isMaximizing
+                            ? Math.max(score, bestScore)
+                            : Math.min(score, bestScore);
+                }
+            }
+        }
+
+        return bestScore;
     }
 
     private boolean checkWin() {
-        for (int i = 0; i < 3; i++) {
-            if (!board[i][0].getText().isEmpty() &&
-                    board[i][0].getText().equals(board[i][1].getText()) &&
-                    board[i][1].getText().equals(board[i][2].getText()))
-                return true;
-        }
-        for (int i = 0; i < 3; i++) {
-            if (!board[0][i].getText().isEmpty() &&
-                    board[0][i].getText().equals(board[1][i].getText()) &&
-                    board[1][i].getText().equals(board[2][i].getText()))
-                return true;
-        }
-        if (!board[0][0].getText().isEmpty() &&
-                board[0][0].getText().equals(board[1][1].getText()) &&
-                board[1][1].getText().equals(board[2][2].getText()))
-            return true;
+        return checkWinFor("X") || checkWinFor("O");
+    }
 
-        return !board[0][2].getText().isEmpty() &&
-                board[0][2].getText().equals(board[1][1].getText()) &&
-                board[1][1].getText().equals(board[2][0].getText());
+    private boolean checkWinFor(String symbol) {
+        for (int i = 0; i < 3; i++) {
+            if (symbol.equals(board[i][0].getText()) &&
+                    symbol.equals(board[i][1].getText()) &&
+                    symbol.equals(board[i][2].getText()))
+                return true;
+
+            if (symbol.equals(board[0][i].getText()) &&
+                    symbol.equals(board[1][i].getText()) &&
+                    symbol.equals(board[2][i].getText()))
+                return true;
+        }
+
+        return (symbol.equals(board[0][0].getText()) &&
+                symbol.equals(board[1][1].getText()) &&
+                symbol.equals(board[2][2].getText())) ||
+                (symbol.equals(board[0][2].getText()) &&
+                        symbol.equals(board[1][1].getText()) &&
+                        symbol.equals(board[2][0].getText()));
+    }
+
+    private boolean isBoardFull() {
+        for (Button[] row : board)
+            for (Button btn : row)
+                if (btn.getText().isEmpty())
+                    return false;
+        return true;
     }
 
     private void showWinDialog(String winner) {
         Alert alert = new Alert(Alert.AlertType.INFORMATION);
         alert.setTitle("Game over");
         alert.setHeaderText(null);
-        if (winner.equals("Draw!")) {
-            alert.setContentText(winner);
-        } else {
-            alert.setContentText("Winner: " + winner);
-        }
+        alert.setContentText(winner.equals("Draw!") ? winner : "Winner: " + winner);
         alert.showAndWait();
+    }
+
+    private void endGame() {
+        gameOver = true;
+        showEndButtons();
     }
 
     private void showEndButtons() {
@@ -177,6 +241,7 @@ public class TicTacToeAI {
                 btn.setText("");
         xTurn = true;
         gameOver = false;
+        moveCount = 0;
         buttonsBox.setVisible(false);
     }
 
