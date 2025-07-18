@@ -7,6 +7,8 @@ A simple TicTacToe game with a graphical user interface built using JavaFX. The 
 - Player vs Player mode
 - Player vs AI mode with 3 difficulty levels: Easy, Medium, Hard 
 - End-of-game alerts showing the winner or a draw
+- Game statistics for PvP and PvAI matches
+- Clean layout and easy-to-use interface
 
 ---
 ## How to play
@@ -15,7 +17,8 @@ A simple TicTacToe game with a graphical user interface built using JavaFX. The 
     - **Player vs AI**: Play against the computer.
 - Click on any empty cell in the 3x3 grid to place your mark (X or O).
 - The game alerts when someone wins or the board is full (draw).
-- After a game finishes, use the Play Again button to restart the same mode, or Change Game Mode to return to the menu.
+- After a game finishes, use the **Play Again** button to restart the game mode, or **Change Game Mode** to return to the menu.
+- Access the **Statistics** page from the main menu to view game stats.
 
 ---
 
@@ -39,6 +42,15 @@ The following features are planned or in development:
 
 - [x] **Custom Player Names (PvP)**  
   Allow players to enter their names before starting the Player vs Player mode, and show their names during gameplay instead of generic labels
+
+- [x] **Statistics Page**  
+  Display general and detailed game stats (PvP & PvAI), including per-difficulty results 
+
+- [x] **Improved UI**  
+  Apply modern styling using JavaFX:
+  - Consistent padding, spacing, colors
+  - Organized sections using VBox and ScrollPane
+  - Stylized buttons and labels
 
 - [ ] **+ Maybe more to come**  
   Additional features may be added based on  experimentation.

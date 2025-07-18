@@ -1,13 +1,11 @@
 package com.example.tictactoe;
 
-import javafx.scene.Parent;
-import javafx.scene.control.Alert;
-import javafx.scene.control.Button;
-import javafx.scene.layout.GridPane;
-import javafx.scene.layout.HBox;
-import javafx.scene.layout.VBox;
-import javafx.geometry.Pos;
-import javafx.scene.text.Font;
+import javafx.scene.*;
+import javafx.scene.control.*;
+import javafx.scene.layout.*;
+import javafx.geometry.*;
+import javafx.scene.text.*;
+import static com.example.tictactoe.UIUtils.*;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -15,7 +13,7 @@ import java.util.Random;
 
 public class TicTacToeAI {
 
-    private boolean xTurn = true;  // true dacă e rândul lui X (player)
+    private boolean xTurn = true;
     private boolean gameOver = false;
 
     private final Button[][] board = new Button[3][3];
@@ -53,8 +51,8 @@ public class TicTacToeAI {
 
         buttonsBox.setAlignment(Pos.CENTER);
 
-        Button playAgainBtn = new Button("Play Again");
-        Button changeModeBtn = new Button("Change Game Mode");
+        Button playAgainBtn = createStyledButton("Play Again");
+        Button changeModeBtn = createStyledButton("Change Game Mode");
 
         playAgainBtn.setOnAction(e -> {
             resetBoard();
@@ -80,6 +78,10 @@ public class TicTacToeAI {
         return root;
     }
 
+    private Statistics.Starter getStarter() {
+        return playerStarts ? Statistics.Starter.PLAYER : Statistics.Starter.AI;
+    }
+
     private Button createCell() {
         Button btn = new Button();
         btn.setFont(Font.font(36));
@@ -91,10 +93,12 @@ public class TicTacToeAI {
             btn.setText("X");
 
             if (checkWin()) {
+                updateStatistics("Player (X)");
                 showWinDialog("Player (X)");
                 endGame();
                 return;
             } else if (isBoardFull()) {
+                updateStatistics("Draw!");
                 showWinDialog("Draw!");
                 endGame();
                 return;
@@ -104,6 +108,7 @@ public class TicTacToeAI {
             aiMove();
 
             if (checkWin()) {
+                updateStatistics("AI (O)");
                 showWinDialog("AI (O)");
                 endGame();
                 return;
@@ -232,6 +237,19 @@ public class TicTacToeAI {
         alert.setHeaderText(null);
         alert.setContentText(winner.equals("Draw!") ? winner : "Winner: " + winner);
         alert.showAndWait();
+    }
+
+    private void updateStatistics(String winner) {
+        Statistics stats = Statistics.getInstance();
+        Statistics.Starter starter = getStarter();
+
+        if (winner.equals("Draw!")) {
+            stats.recordPVAIGame(difficulty, starter, null);
+        } else if (winner.equals("Player (X)")) {
+            stats.recordPVAIGame(difficulty, starter, "player");
+        } else if (winner.equals("AI (O)")) {
+            stats.recordPVAIGame(difficulty, starter, "ai");
+        }
     }
 
     private void endGame() {

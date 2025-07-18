@@ -1,6 +1,6 @@
 package com.example.tictactoe;
 
-import javafx.scene.control.Button;
+import javafx.scene.control.*;
 
 public class Minmax {
     public static Button findBestMove(Button[][] board, String aiSymbol, String playerSymbol) {

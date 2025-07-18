@@ -1,14 +1,11 @@
 package com.example.tictactoe;
 
-import javafx.scene.Parent;
-import javafx.scene.control.Alert;
-import javafx.scene.control.Button;
-import javafx.scene.control.Label;
-import javafx.scene.layout.GridPane;
-import javafx.scene.layout.VBox;
-import javafx.scene.layout.HBox;
-import javafx.geometry.Pos;
-import javafx.scene.text.Font;
+import javafx.scene.*;
+import javafx.scene.control.*;
+import javafx.scene.layout.*;
+import javafx.geometry.*;
+import javafx.scene.text.*;
+import static com.example.tictactoe.UIUtils.*;
 
 public class TicTacToe {
     private boolean xTurn = true;
@@ -17,7 +14,7 @@ public class TicTacToe {
     private final VBox root = new VBox(10);
     private final HBox buttonsBox = new HBox(10);
     private final GameModeSwitcher switcher;
-    private final Label turnLabel = new Label();
+    private final Label turnLabel = createStyledLabel("");
 
     private final String player1Name;
     private final String player2Name;
@@ -51,8 +48,8 @@ public class TicTacToe {
         }
 
         buttonsBox.setAlignment(Pos.CENTER);
-        Button playAgainBtn = new Button("Play Again");
-        Button changeModeBtn = new Button("Change Game Mode");
+        Button playAgainBtn = createStyledButton("Play Again");
+        Button changeModeBtn = createStyledButton("Change Game Mode");
 
         playAgainBtn.setOnAction(e -> {
             resetBoard();
@@ -84,10 +81,13 @@ public class TicTacToe {
             btn.setText(xTurn ? "X" : "O");
 
             if (checkWin()) {
-                showWinDialog(xTurn ? player1Name : player2Name);
+                String winnerName = xTurn ? player1Name : player2Name;
+                updateStatistics(winnerName);
+                showWinDialog(winnerName);
                 gameOver = true;
                 showEndButtons();
             } else if (isBoardFull()) {
+                updateStatistics("Draw!");
                 showWinDialog("Draw!");
                 gameOver = true;
                 showEndButtons();
@@ -132,6 +132,17 @@ public class TicTacToe {
         return !board[0][2].getText().isEmpty() &&
                 board[0][2].getText().equals(board[1][1].getText()) &&
                 board[1][1].getText().equals(board[2][0].getText());
+    }
+
+    private void updateStatistics(String winner) {
+        Statistics stats = Statistics.getInstance();
+        if (winner.equals("Draw!")) {
+            stats.recordPVPGame(null);
+        } else if (winner.equals(player1Name)) {
+            stats.recordPVPGame("player1");
+        } else if (winner.equals(player2Name)) {
+            stats.recordPVPGame("player2");
+        }
     }
 
     private void showWinDialog(String winner) {
