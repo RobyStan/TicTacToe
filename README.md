@@ -51,6 +51,7 @@ The following features are planned or in development:
   - Consistent padding, spacing, colors
   - Organized sections using VBox and ScrollPane
   - Stylized buttons and labels
+  - Structured layout with VBox and ScrollPane
 
 - [ ] **+ Maybe more to come**  
   Additional features may be added based on  experimentation.

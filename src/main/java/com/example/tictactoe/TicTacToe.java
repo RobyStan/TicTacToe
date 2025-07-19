@@ -30,8 +30,10 @@ public class TicTacToe {
     }
 
     public Parent createContent() {
-        root.setPrefSize(500, 500);
+        root.setPrefSize(550, 550);
         root.setAlignment(Pos.CENTER);
+
+        UIUtils.applyBackground(root);
 
         turnLabel.setText(player1Name + " (X)'s turn");
         root.getChildren().add(turnLabel);

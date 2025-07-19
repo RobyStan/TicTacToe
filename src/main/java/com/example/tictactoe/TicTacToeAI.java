@@ -13,7 +13,7 @@ import java.util.Random;
 
 public class TicTacToeAI {
 
-    private boolean xTurn = true;
+    private boolean xTurn;
     private boolean gameOver = false;
 
     private final Button[][] board = new Button[3][3];
@@ -35,8 +35,10 @@ public class TicTacToeAI {
     }
 
     public Parent createContent() {
-        root.setPrefSize(500, 500);
+        root.setPrefSize(550, 550);
         root.setAlignment(Pos.CENTER);
+
+        UIUtils.applyBackground(root);
 
         GridPane grid = new GridPane();
         grid.setAlignment(Pos.CENTER);
@@ -111,7 +113,6 @@ public class TicTacToeAI {
                 updateStatistics("AI (O)");
                 showWinDialog("AI (O)");
                 endGame();
-                return;
             } else if (isBoardFull()) {
                 showWinDialog("Draw!");
                 endGame();
@@ -243,12 +244,10 @@ public class TicTacToeAI {
         Statistics stats = Statistics.getInstance();
         Statistics.Starter starter = getStarter();
 
-        if (winner.equals("Draw!")) {
-            stats.recordPVAIGame(difficulty, starter, null);
-        } else if (winner.equals("Player (X)")) {
-            stats.recordPVAIGame(difficulty, starter, "player");
-        } else if (winner.equals("AI (O)")) {
-            stats.recordPVAIGame(difficulty, starter, "ai");
+        switch (winner) {
+            case "Draw!" -> stats.recordPVAIGame(difficulty, starter, null);
+            case "Player (X)" -> stats.recordPVAIGame(difficulty, starter, "player");
+            case "AI (O)" -> stats.recordPVAIGame(difficulty, starter, "ai");
         }
     }
 
