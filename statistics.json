@@ -1,19 +1,19 @@
 {
-  "totalGames" : 0,
-  "pvpGames" : 0,
-  "pvaiGames" : 0,
-  "pvpWinsPlayer1" : 0,
-  "pvpWinsPlayer2" : 0,
+  "totalGames" : 9,
+  "pvpGames" : 2,
+  "pvaiGames" : 7,
+  "pvpWinsPlayer1" : 1,
+  "pvpWinsPlayer2" : 1,
   "pvpDraws" : 0,
   "pvaiWinsPlayer" : {
     "EASY" : 0,
-    "MEDIUM" : 0,
+    "MEDIUM" : 1,
     "HARD" : 0
   },
   "pvaiWinsAI" : {
-    "EASY" : 0,
-    "MEDIUM" : 0,
-    "HARD" : 0
+    "EASY" : 1,
+    "MEDIUM" : 2,
+    "HARD" : 3
   },
   "pvaiDraws" : {
     "EASY" : 0,
@@ -27,7 +27,7 @@
     },
     "MEDIUM" : {
       "PLAYER" : 0,
-      "AI" : 0
+      "AI" : 1
     },
     "HARD" : {
       "PLAYER" : 0,
@@ -36,16 +36,16 @@
   },
   "pvaiWinsAIByStarter" : {
     "EASY" : {
-      "PLAYER" : 0,
+      "PLAYER" : 1,
       "AI" : 0
     },
     "MEDIUM" : {
       "PLAYER" : 0,
-      "AI" : 0
+      "AI" : 2
     },
     "HARD" : {
       "PLAYER" : 0,
-      "AI" : 0
+      "AI" : 3
     }
   },
   "pvaiDrawsByStarter" : {

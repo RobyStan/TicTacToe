@@ -4,6 +4,8 @@ import javafx.geometry.*;
 import javafx.scene.Scene;
 import javafx.scene.control.*;
 import javafx.scene.layout.*;
+import javafx.scene.paint.*;
+import javafx.scene.text.*;
 import javafx.stage.*;
 
 import static com.example.tictactoe.UIUtils.*;
@@ -11,7 +13,7 @@ import static com.example.tictactoe.UIUtils.*;
 public class MenuController {
 
     private final Stage primaryStage;
-    private final Main mainApp; // Pentru callback-uri
+    private final Main mainApp;
 
     private DifficultyLevel selectedDifficulty;
     private static final int WINDOW_WIDTH = 550;
@@ -23,6 +25,12 @@ public class MenuController {
     }
 
     public void showMenu() {
+        Label title = createStyledLabel("TicTacToe");
+        title.setFont(Font.font("Arial", FontWeight.BOLD, 32));
+        title.setTextFill(Color.DARKSLATEBLUE);
+        title.setAlignment(Pos.CENTER);
+        title.setPadding(new Insets(0, 0, 50, 0));
+
         Button btnPVP = createStyledButton("Player vs Player");
         Button btnPVE = createStyledButton("Player vs AI");
         Button btnStats = createStyledButton("Statistics");
@@ -31,7 +39,7 @@ public class MenuController {
         btnPVE.setOnAction(e -> showDifficultyMenu());
         btnStats.setOnAction(e -> mainApp.switchToStatistics());
 
-        VBox menu = new VBox(10, btnPVP, btnPVE, btnStats);
+        VBox menu = new VBox(10,title, btnPVP, btnPVE, btnStats);
         menu.setAlignment(Pos.CENTER);
         menu.setPadding(new Insets(20));
         applyBackground(menu);

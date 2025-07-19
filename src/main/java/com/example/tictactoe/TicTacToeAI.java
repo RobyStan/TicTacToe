@@ -6,6 +6,7 @@ import javafx.scene.layout.*;
 import javafx.geometry.*;
 import javafx.scene.text.*;
 import static com.example.tictactoe.UIUtils.*;
+import static com.example.tictactoe.Minmax.getBestMove;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -153,50 +154,10 @@ public class TicTacToeAI {
     }
 
     private void makeBestMove() {
-        int bestScore = Integer.MIN_VALUE;
-        Button bestMove = null;
-
-        for (int row = 0; row < 3; row++) {
-            for (int col = 0; col < 3; col++) {
-                Button btn = board[row][col];
-                if (btn.getText().isEmpty()) {
-                    btn.setText("O");
-                    int score = minimax(false);
-                    btn.setText("");
-                    if (score > bestScore) {
-                        bestScore = score;
-                        bestMove = btn;
-                    }
-                }
-            }
-        }
-
+        Button bestMove = getBestMove(board);
         if (bestMove != null) {
             bestMove.setText("O");
         }
-    }
-
-    private int minimax(boolean isMaximizing) {
-        if (checkWinFor("O")) return 1;
-        if (checkWinFor("X")) return -1;
-        if (isBoardFull()) return 0;
-
-        int bestScore = isMaximizing ? Integer.MIN_VALUE : Integer.MAX_VALUE;
-
-        for (Button[] row : board) {
-            for (Button btn : row) {
-                if (btn.getText().isEmpty()) {
-                    btn.setText(isMaximizing ? "O" : "X");
-                    int score = minimax(!isMaximizing);
-                    btn.setText("");
-                    bestScore = isMaximizing
-                            ? Math.max(score, bestScore)
-                            : Math.min(score, bestScore);
-                }
-            }
-        }
-
-        return bestScore;
     }
 
     private boolean checkWin() {
