@@ -9,6 +9,7 @@ A simple TicTacToe game with a graphical user interface built using JavaFX. The 
 - End-of-game alerts showing the winner or a draw
 - Game statistics for PvP and PvAI matches
 - Clean layout and easy-to-use interface
+- Save and load game statistics from a JSON file
 
 ---
 ## How to play
@@ -44,7 +45,8 @@ The following features are planned or in development:
   Allow players to enter their names before starting the Player vs Player mode, and show their names during gameplay instead of generic labels
 
 - [x] **Statistics Page**  
-  Display general and detailed game stats (PvP & PvAI), including per-difficulty results 
+  - Display general and detailed game stats (PvP & PvAI), including per-difficulty results 
+  - Added saving and loading of game statistics using a JSON file
 
 - [x] **Improved UI**  
   Apply modern styling using JavaFX:

@@ -1,11 +1,10 @@
 package com.example.tictactoe;
 
-import javafx.geometry.Insets;
-import javafx.geometry.Pos;
+import javafx.geometry.*;
 import javafx.scene.Scene;
 import javafx.scene.control.*;
 import javafx.scene.layout.*;
-import javafx.stage.Stage;
+import javafx.stage.*;
 
 import static com.example.tictactoe.UIUtils.*;
 

@@ -11,6 +11,7 @@ public class Main extends Application implements TicTacToe.GameModeSwitcher, Tic
 
     @Override
     public void start(Stage primaryStage) {
+        Statistics.getInstance().loadFromFile();
         this.primaryStage = primaryStage;
         menuController = new MenuController(primaryStage, this);
         gameStarter = new GameStarter(primaryStage, this);
@@ -28,6 +29,11 @@ public class Main extends Application implements TicTacToe.GameModeSwitcher, Tic
     public void switchToStatistics() {
         StatisticsView statsView = new StatisticsView(primaryStage, menuController);
         statsView.showStatisticsPage();
+    }
+
+    @Override
+    public void stop() {
+        Statistics.getInstance().saveToFile();
     }
 
     @Override

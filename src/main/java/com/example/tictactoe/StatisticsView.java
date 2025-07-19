@@ -1,16 +1,18 @@
 package com.example.tictactoe;
 
-import javafx.geometry.Insets;
-import javafx.geometry.Pos;
+import javafx.geometry.*;
 import javafx.scene.Scene;
 import javafx.scene.control.*;
 import javafx.scene.layout.*;
-import javafx.scene.paint.Color;
-import javafx.scene.text.Font;
-import javafx.scene.text.FontWeight;
+import javafx.scene.paint.*;
+import javafx.scene.text.*;
 import javafx.stage.Stage;
 
+import java.util.Map;
+import java.util.stream.Collectors;
+
 import static com.example.tictactoe.UIUtils.*;
+import static com.example.tictactoe.Statistics.*;
 
 public class StatisticsView {
 
@@ -22,6 +24,13 @@ public class StatisticsView {
     public StatisticsView(Stage primaryStage, MenuController menuController) {
         this.primaryStage = primaryStage;
         this.menuController = menuController;
+    }
+
+    private String mapToString(Map<String, Integer> map) {
+        return map.entrySet()
+                .stream()
+                .map(e -> e.getKey() + "=" + e.getValue())
+                .collect(Collectors.joining(", ", "{", "}"));
     }
 
     public void showStatisticsPage() {
@@ -47,7 +56,7 @@ public class StatisticsView {
                 createStyledLabel("PVP - Draws: " + stats.getPvpDraws())
         );
 
-        Label pvaiTitle = createStyledLabel(" PvAI - Difficulty Stats:");
+        Label pvaiTitle = createStyledLabel("PvAI - Difficulty Stats:");
         pvaiTitle.setFont(Font.font("Arial", FontWeight.BOLD, 20));
         pvaiTitle.setTextFill(Color.STEELBLUE);
 
@@ -55,18 +64,15 @@ public class StatisticsView {
         pvaiStatsBox.setPadding(new Insets(8));
         pvaiStatsBox.setAlignment(Pos.TOP_CENTER);
 
-        VBox card = new VBox(10);
+        VBox card = new VBox(5);
         card.setPadding(new Insets(8));
         applyCardStyle(card);
 
-        for (DifficultyLevel d : DifficultyLevel.values()) {
-            Label label = createStyledLabel(
-                    d.name() + ": Player wins " + stats.getPvaiWinsPlayer(d)
-                            + ", AI wins " + stats.getPvaiWinsAI(d)
-                            + ", Draws " + stats.getPvaiDraws(d)
-            );
-            card.getChildren().add(label);
-        }
+        Label playerWinsLabel = createStyledLabel("Player wins " + mapToString(convertDifficultyMapToStringKey(stats.getPvaiWinsPlayer())));
+        Label aiWinsLabel = createStyledLabel("AI wins " + mapToString(convertDifficultyMapToStringKey(stats.getPvaiWinsAI())));
+        Label drawsLabel = createStyledLabel("Draws " + mapToString(convertDifficultyMapToStringKey(stats.getPvaiDraws())));
+
+        card.getChildren().addAll(playerWinsLabel, aiWinsLabel, drawsLabel);
 
         pvaiStatsBox.getChildren().add(card);
 
@@ -82,21 +88,19 @@ public class StatisticsView {
         card.setPadding(new Insets(8));
         applyCardStyle(card);
 
-        for (DifficultyLevel d : DifficultyLevel.values()) {
-            Label playerStartsLabel = createStyledLabel(
-                    d.name() + " (Player starts): Player wins " +
-                            stats.getPvaiWinsPlayerByStarter(d, Statistics.Starter.PLAYER) + ", AI wins " +
-                            stats.getPvaiWinsAIByStarter(d, Statistics.Starter.PLAYER) + ", Draws " +
-                            stats.getPvaiDrawsByStarter(d, Statistics.Starter.PLAYER));
+        VBox playerStartsStats = new VBox(2);
+        playerStartsStats.getChildren().add(createStyledLabel("Player Starts"));
+        playerStartsStats.getChildren().add(createStyledLabel("Player wins " + mapToString(stats.getPvaiWinsPlayerByStarterMap(Statistics.Starter.PLAYER))));
+        playerStartsStats.getChildren().add(createStyledLabel("AI wins " + mapToString(stats.getPvaiWinsAIByStarterMap(Statistics.Starter.PLAYER))));
+        playerStartsStats.getChildren().add(createStyledLabel("Draws " + mapToString(stats.getPvaiDrawsByStarterMap(Statistics.Starter.PLAYER))));
 
-            Label aiStartsLabel = createStyledLabel(
-                    d.name() + " (AI starts): Player wins " +
-                            stats.getPvaiWinsPlayerByStarter(d, Statistics.Starter.AI) + ", AI wins " +
-                            stats.getPvaiWinsAIByStarter(d, Statistics.Starter.AI) + ", Draws " +
-                            stats.getPvaiDrawsByStarter(d, Statistics.Starter.AI));
+        VBox aiStartsStats = new VBox(2);
+        aiStartsStats.getChildren().add(createStyledLabel("AI Starts"));
+        aiStartsStats.getChildren().add(createStyledLabel("Player wins " + mapToString(stats.getPvaiWinsPlayerByStarterMap(Statistics.Starter.AI))));
+        aiStartsStats.getChildren().add(createStyledLabel("AI wins " + mapToString(stats.getPvaiWinsAIByStarterMap(Statistics.Starter.AI))));
+        aiStartsStats.getChildren().add(createStyledLabel("Draws " + mapToString(stats.getPvaiDrawsByStarterMap(Statistics.Starter.AI))));
 
-            card.getChildren().addAll(playerStartsLabel, aiStartsLabel);
-        }
+        card.getChildren().addAll(playerStartsStats, aiStartsStats);
 
         starterStatsBox.getChildren().add(card);
 

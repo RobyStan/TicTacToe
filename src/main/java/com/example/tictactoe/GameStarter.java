@@ -1,7 +1,7 @@
 package com.example.tictactoe;
 
-import javafx.scene.Scene;
-import javafx.stage.Stage;
+import javafx.scene.*;
+import javafx.stage.*;
 
 public class GameStarter {
 
